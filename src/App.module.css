@@ -1,0 +1,89 @@
+.input {
+}
+.input input {
+  font-size: 1.5em;
+}
+
+li {
+  margin-top: 1em;
+}
+
+table {
+  margin-top: 1em;
+  border-collapse: collapse;
+}
+
+thead th {
+  font-weight: normal;
+  font-style: italic;
+  color: gray;
+}
+
+td, th {
+  text-align: left;
+  padding: 0.25em 0.75em;
+}
+
+tbody tr {
+  color: gray;
+}
+
+.date_input {
+  background-color: yellow;
+  color: black;
+}
+
+.selected {
+  border: 2px solid black;
+  color: black;
+}
+
+.selected_century {
+  background-color: lightgreen;
+  color: black;
+}
+
+.selected_month {
+  background-color: lightblue;
+  color: black;
+}
+
+.selected_day {
+  background-color: orange;
+  color: black;
+}
+
+.intermediate {
+  background-color: lightgray;
+  color: black;
+}
+.intermediate2 {
+  background-color: pink;
+  color: black;
+}
+.intermediate3 {
+  background-color: white;
+  color: black;
+  border: 1px solid lightgray;
+}
+
+.result {
+  font-weight: bold;
+  font-size: 1.25em;
+}
+
+span {
+  display: inline-block;
+  padding-left: .75em; padding-right: .75em;
+  min-width: 1em;
+  text-align: center;
+  border-radius: 10px
+}
+
+th span, td span {
+  margin-left: -.75em;
+}
+
+footer {
+  margin-top: 3em;
+}
