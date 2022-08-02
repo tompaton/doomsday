@@ -4,6 +4,7 @@ Interactive doomsday algorithm date calculator.
 
 See <a href="https://en.wikipedia.org/wiki/Doomsday_rule">Wikipedia</a> for more details.
 
+Live version: https://tompaton.com/pages/doomsday.html
 
 ## Usage
 
