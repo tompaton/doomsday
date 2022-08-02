@@ -234,10 +234,12 @@ function App() {
                             <span class={styles.selected_month}>
                                 {month_day(month())}
                             </span>
-                            {' → '}
-                            <span class={styles.intermediate3}>
-                                {month_offset()}
-                            </span>
+                            <Show when={month_offset() < 0 || month_offset() >= 7}>
+                                {' → '}
+                                <span class={styles.intermediate3}>
+                                    {month_offset()}
+                                </span>
+                            </Show>
                             {' → '}
                             <span class={styles.intermediate2}>
                                 {month_offset_final()}
@@ -259,7 +261,6 @@ function App() {
                                 {month_offset_final()}
                             </span>
                             {' → '}
-                            {' '}
                             <b class={styles.result}>
                                 {DAY[total() % 7]}
                             </b>
