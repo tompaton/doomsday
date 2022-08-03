@@ -51,50 +51,38 @@ function App() {
                         <p>
                             Year
                             {' → '}
-                            <span class={styles.date_input}>{year2()}</span>
+                            <D>{year2()}</D>
                             {' % '}
-                            <span class={styles.intermediate3}>
-                                7
-                            </span>
+                            <I3>7</I3>
                             {' → '}
-                            <span class={styles.intermediate}>{year_offset()}</span>
+                            <I1>{year_offset()}</I1>
                         </p>
                         <p>
                             Leap year
                             {' → '}
-                            <span class={styles.date_input}>{year2()}</span>
+                            <D>{year2()}</D>
                             {' / '}
-                            <span class={styles.intermediate3}>
-                                4
-                            </span>
+                            <I3>4</I3>
                             <Show when={leap_year_offset() >= 7}>
                                 {' → '}
-                                <span class={styles.intermediate3}>
-                                    {leap_year_offset()}
-                                </span>
+                                <I3>{leap_year_offset()}</I3>
                             </Show>
                             {' → '}
-                            <span class={styles.intermediate}>{leap_year_offset() % 7}</span>
+                            <I1>{leap_year_offset() % 7}</I1>
                         </p>
                         <p>
                             {' → '}
-                            <span class={styles.selected_century}>
-                                {century_offset()}
-                            </span>
+                            <S1>{century_offset()}</S1>
                             {' + '}
-                            <span class={styles.intermediate}>{year_offset()}</span>
+                            <I1>{year_offset()}</I1>
                             {' + '}
-                            <span class={styles.intermediate}>{leap_year_offset() % 7}</span>
+                            <I1>{leap_year_offset() % 7}</I1>
                             <Show when={year_offset_final() >= 7}>
                                 {' → '}
-                                <span class={styles.intermediate3}>
-                                    {year_offset_final()}
-                                </span>
+                                <I3>{year_offset_final()}</I3>
                             </Show>
                             {' → '}
-                            <span class={styles.selected_day}>
-                                {doomsday()}
-                            </span>
+                            <S3>{doomsday()}</S3>
                         </p>
                     </li>
 
@@ -112,37 +100,25 @@ function App() {
                     <li>
                         Number of days to doomsday
                         <p>
-                            <span class={styles.date_input}>{day()}</span>
+                            <D>{day()}</D>
                             {' - '}
-                            <span class={styles.selected_month}>
-                                {month_day(month())}
-                            </span>
+                            <S2>{month_day(month())}</S2>
                             <Show when={month_offset() < 0 || month_offset() >= 7}>
                                 {' → '}
-                                <span class={styles.intermediate3}>
-                                    {month_offset()}
-                                </span>
+                                <I3>{month_offset()}</I3>
                             </Show>
                             {' → '}
-                            <span class={styles.intermediate2}>
-                                {month_offset_final()}
-                            </span>
+                            <I2>{month_offset_final()}</I2>
                         </p>
                     </li>
 
                     <li>
-                        <span class={styles.date_input}>
-                            {day()} {MONTH_NAME[month()]} {year4()}
-                        </span>
+                        <D>{day()} {MONTH_NAME[month()]} {year4()}</D>
                         is on
                         <p>
-                            <span class={styles.selected_day}>
-                                {DAY[doomsday()]}
-                            </span>
+                            <S3>{DAY[doomsday()]}</S3>
                             {' + '}
-                            <span class={styles.intermediate2}>
-                                {month_offset_final()}
-                            </span>
+                            <I2>{month_offset_final()}</I2>
                             {' → '}
                             <b class={styles.result}>
                                 {DAY[total() % 7]}
@@ -181,13 +157,13 @@ function CenturyTable(props) {
                     {(c) => <tr classList={{[styles.selected]: props.selected(c)}}>
                                 <th>
                                     <Show when={props.selected(c)} fallback={c}>
-                                        <span class={styles.date_input}>{c}</span>
+                                        <D>{c}</D>
                                     </Show>
                                 </th>
                                 <td>{DAY[CENTURY[c]]}</td>
                                 <td style="background-color: white;">
                                     <Show when={props.selected(c)} fallback={CENTURY[c]}>
-                                        <span class={styles.selected_century}>{CENTURY[c]}</span>
+                                        <S1>{CENTURY[c]}</S1>
                                     </Show>
                                 </td>
                             </tr>}
@@ -216,7 +192,7 @@ function DayTable(props) {
                     {(d) => <tr classList={{[styles.selected]: props.selected(+d)}}>
                                 <th>
                                     <Show when={props.selected(+d)} fallback={d}>
-                                        <span class={styles.selected_day}>{d}</span>
+                                        <S3>{d}</S3>
                                     </Show>
                                 </th>
                                 <td>{DAY[d]}</td>
@@ -283,12 +259,12 @@ function MonthTable(props) {
                     {(m) => <tr classList={{[styles.selected]: props.selected(m)}}>
                                 <td>
                                     <Show when={props.selected(m)} fallback={props.month_day(m)}>
-                                        <span class={styles.selected_month}>{props.month_day(m)}</span>
+                                        <S2>{props.month_day(m)}</S2>
                                     </Show>
                                 </td>
                                 <td>
                                     <Show when={props.selected(m)} fallback={MONTH_NAME[m]}>
-                                        <span class={styles.date_input}>{MONTH_NAME[m]}</span>
+                                        <D>{MONTH_NAME[m]}</D>
                                     </Show>
                                 </td>
                                 <td>{MNEMONIC[m]}</td>
@@ -299,5 +275,49 @@ function MonthTable(props) {
     );
 }
 
+
+// short tags to reduce markup required to highlight related values
+
+function D(props) {
+    return (
+        <span class={styles.date_input}>{props.children}</span>
+    );
+}
+
+function S1(props) {
+    return (
+        <span class={styles.selected_century}>{props.children}</span>
+    );
+}
+
+function S2(props) {
+    return (
+        <span class={styles.selected_month}>{props.children}</span>
+    );
+}
+
+function S3(props) {
+    return (
+        <span class={styles.selected_day}>{props.children}</span>
+    );
+}
+
+function I1(props) {
+    return (
+        <span class={styles.intermediate}>{props.children}</span>
+    );
+}
+
+function I2(props) {
+    return (
+        <span class={styles.intermediate2}>{props.children}</span>
+    );
+}
+
+function I3(props) {
+    return (
+        <span class={styles.intermediate3}>{props.children}</span>
+    );
+}
 
 export default App;
