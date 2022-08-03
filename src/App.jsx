@@ -4,25 +4,57 @@ import styles from './App.module.css';
 
 
 function App() {
+    // date input
     const [date, setDate] = createSignal(new Date().toISOString().substr(0, 10));
+
+    // extract date parts
     const year4 = () => date().substr(0, 4);
     const century = () => date().substr(0, 2) + '00';
     const year2 = () => date().substr(2, 2);
     const month = () => parseInt(date().substr(5, 2)).toString();
     const day = () => parseInt(date().substr(8, 2)).toString();
-    const leap = () => ((year4() % 4 == 0) && (year4() % 100 != 0)) || (year4() % 400 == 0);
+    const is_leap_year = () => ((year4() % 4 == 0) && (year4() % 100 != 0)) || (year4() % 400 == 0);
 
-    const century_offset = () => CENTURY[century()];
-    const year_offset = () => year2() % 7;
-    const leap_year_offset = () => Math.floor(year2() / 4);
-    const year_offset_final = () => century_offset() + year_offset() + leap_year_offset();
-    const doomsday = () => year_offset_final() % 7;
+    // try to organise calculation so that working values can be matched to results
 
-    const month_day = (m) => (leap() ? MONTH_LEAP : MONTH)[m];
-    const month_offset = () => day() - month_day(month());
-    const month_offset_final = () => (28 + month_offset()) % 7;
+    const century_working = () => <CenturyTable selected={createSelector(century)} />;
+    const century_result = () => CENTURY[century()];
 
-    const total = () => doomsday() + month_offset_final();
+    const year_working = () => <><D>{year2()}</D> {' % '} <I4>7</I4></>;
+    const year_result = () => year2() % 7;
+
+    const leap_year_working = () => <><D>{year2()}</D> {' / '} <I4>4</I4></>;
+    const leap_year_result = () => Math.floor(year2() / 4);
+
+    const year_anchor_working = () => <>
+                                          <S1>{century_result()}</S1>
+                                          {' + '} <I1>{year_result()}</I1>
+                                          {' + '} <I1>{leap_year_result() % 7}</I1>
+                                      </>;
+    const year_anchor_result = () => century_result() + year_result() + leap_year_result();
+
+    const doomsday = () => year_anchor_result() % 7;
+    const doomsday_working = () => <DayTable selected={createSelector(doomsday)} />;
+
+    const month_day = (m) => (is_leap_year() ? MONTH_LEAP : MONTH)[m];
+    const month_day_working = () => <MonthTable month_day={month_day}
+                                                selected={createSelector(month)} />;
+    const month_day_result = () => month_day(month());
+
+    const month_offset_working = () => <>
+                                           <D>{day()}</D>
+                                           {' - '}
+                                           <S2>{month_day_result()}</S2>
+                                       </>;
+    const month_offset_result = () => day() - month_day_result();
+    const month_offset_final = () => (28 + month_offset_result()) % 7;
+
+    const total_working = () => <>
+                                    <S3>{DAY[doomsday()]}</S3>
+                                    {' + '}
+                                    <I2>{month_offset_final()}</I2>
+                                </>;
+    const total_result = () => doomsday() + month_offset_final();
 
     return (
         <div class={styles.App}>
@@ -42,45 +74,24 @@ function App() {
                 <Show when={date()}>
                     <li>
                         Get century anchor day
-                        <CenturyTable selected={createSelector(century)} />
+                        {century_working()}
                     </li>
 
                     <li>
                         Get year anchor day
 
                         <p>
-                            Year
-                            {' → '}
-                            <D>{year2()}</D>
-                            {' % '}
-                            <I3>7</I3>
-                            {' → '}
-                            <I1>{year_offset()}</I1>
+                            Year {' → '} {year_working()}
+                            {' → '} <I1>{year_result()}</I1>
                         </p>
                         <p>
-                            Leap year
-                            {' → '}
-                            <D>{year2()}</D>
-                            {' / '}
-                            <I3>4</I3>
-                            <Show when={leap_year_offset() >= 7}>
-                                {' → '}
-                                <I3>{leap_year_offset()}</I3>
-                            </Show>
-                            {' → '}
-                            <I1>{leap_year_offset() % 7}</I1>
+                            Leap year {' → '} {leap_year_working()}
+                            <I3>{leap_year_result()}</I3>
+                            {' → '} <I1>{leap_year_result() % 7}</I1>
                         </p>
                         <p>
-                            {' → '}
-                            <S1>{century_offset()}</S1>
-                            {' + '}
-                            <I1>{year_offset()}</I1>
-                            {' + '}
-                            <I1>{leap_year_offset() % 7}</I1>
-                            <Show when={year_offset_final() >= 7}>
-                                {' → '}
-                                <I3>{year_offset_final()}</I3>
-                            </Show>
+                            {' → '} {year_anchor_working()}
+                            <I3>{year_anchor_result()}</I3>
                             {' → '}
                             <S3>{doomsday()}</S3>
                         </p>
@@ -88,25 +99,19 @@ function App() {
 
                     <li>
                         Doomsdays are on
-                        <DayTable selected={createSelector(doomsday)} />
+                        {doomsday_working()}
                     </li>
 
                     <li>
                         Get doomsday date for month
-                        <MonthTable month_day={month_day}
-                                    selected={createSelector(month)} />
+                        {month_day_working()}
                     </li>
 
                     <li>
                         Number of days to doomsday
                         <p>
-                            <D>{day()}</D>
-                            {' - '}
-                            <S2>{month_day(month())}</S2>
-                            <Show when={month_offset() < 0 || month_offset() >= 7}>
-                                {' → '}
-                                <I3>{month_offset()}</I3>
-                            </Show>
+                            {month_offset_working()}
+                            <I3>{month_offset_result()}</I3>
                             {' → '}
                             <I2>{month_offset_final()}</I2>
                         </p>
@@ -116,12 +121,10 @@ function App() {
                         <D>{day()} {MONTH_NAME[month()]} {year4()}</D>
                         is on
                         <p>
-                            <S3>{DAY[doomsday()]}</S3>
-                            {' + '}
-                            <I2>{month_offset_final()}</I2>
+                            {total_working()}
                             {' → '}
                             <b class={styles.result}>
-                                {DAY[total() % 7]}
+                                {DAY[total_result() % 7]}
                             </b>
                         </p>
                     </li>
@@ -315,6 +318,17 @@ function I2(props) {
 }
 
 function I3(props) {
+    // this one is special and will only be shown when the
+    // intermediate value needs to be reduced % 7
+    return (
+        <Show when={props.children < 0 || props.children >= 7}>
+            {' → '}
+            <span class={styles.intermediate3}>{props.children}</span>
+        </Show>
+    );
+}
+
+function I4(props) {
     return (
         <span class={styles.intermediate3}>{props.children}</span>
     );
